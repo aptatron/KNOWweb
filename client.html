@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PopUp</title>
+    <title>Client</title>
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
@@ -41,11 +41,12 @@
     </form>
     <script>
         // initiation
-        update_network(1);
+    //    update_network(1);
         network_graph();
         // initiation end
-        var data
+        var graphdata
         async function update_network(switchValue) {
+            alert("update_network on")
             const jsonData = {};
                 if (switchValue === 2) {
                     const formElement = document.querySelector('form');
@@ -61,18 +62,21 @@
                         },
                         body: JSON.stringify(jsonData)
                     });
-                    data = await response.json();
+                    graphdata = await response.json();
                     //console.log(data);
-        };
+        }
 
-        function network_graph() {
-        // load the JSON data
-            //d3.json("graph1.json").then(function() {
+        async function network_graph() {
+            // load the JSON data
+            d3.json("graph.json").then(function (data) {
+                console.log(data.nodes);
+                console.log(data.edges);
                 var nodes = data.nodes;
                 var links = data.edges;
+//            var nodes = [{id: 1}, {id: 2}, {id: 3}];
+// var links = [{source: 1, target: 2}, {source: 2, target: 3}];
                 console.log(nodes);
                 console.log(links);
-
 
 
                 // create the D3.js graph
@@ -98,12 +102,12 @@
                     })
                     .call(d3.drag());
 
-                var simulation = d3.forceSimulation(data.nodes)
-                    .force("link", d3.forceLink(data.edges).id(function (d) {
+                var simulation = d3.forceSimulation(nodes)
+                    .force("link", d3.forceLink(links).id(function (d) {
                         return d.id;
                     }))
                     .force("charge", d3.forceManyBody())
-                    .force("center", d3.forceCenter(1000 / 2, 800 / 2))
+                    .force("center", d3.forceCenter(500, 400))
 
                 simulation.on("tick", function () {
                     link.attr("x1", function (d) {
@@ -126,19 +130,19 @@
                             return d.y;
                         });
                 });
-            //})
-        };
+                //})
+            });
 
-        async function handleFormSubmit(event) {
-            event.preventDefault();
-            await update_network(2);
-            await network_graph();
-        };
-
-
-        document.getElementById('my-form').addEventListener('submit', handleFormSubmit);
+            async function handleFormSubmit(event) {
+                event.preventDefault();
+                await update_network(2);
+                await network_graph();
+            }
 
 
+            document.getElementById('my-form').addEventListener('submit', handleFormSubmit);
+
+        }
 
 
     </script>

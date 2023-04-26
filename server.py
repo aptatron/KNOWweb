@@ -1,5 +1,5 @@
 import sqlite3
-import networkx as nx
+# import networkx as nx
 import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -146,14 +146,14 @@ def update_network(my_param):
     global edgeset
     print("update network")
     if my_param == "1":
-        read('/Users/makayladove/PycharmProjects/flaskProject1/database')
+        read('/database')
     new_data = request.get_json()
     node(new_data, my_param)
     edge(new_data, my_param)
     network()
     if my_param == "2":
-        write_nodes('/Users/makayladove/PycharmProjects/flaskProject1/database')
-        write_edges('/Users/makayladove/PycharmProjects/flaskProject1/database')
+        write_nodes('/database')
+        write_edges('/database')
     with open('graph1.json', 'r') as f:
         graph_data = json.load(f)
     print("here")
